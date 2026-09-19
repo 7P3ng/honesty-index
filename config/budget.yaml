@@ -1,0 +1,6 @@
+# Hard caps. The harness refuses to start a night that would breach any of them (spec §5).
+concurrency: 4
+max_runs_per_night: 260
+max_runs_per_week: 1500
+no_new_runs_after_utc: "07:00"   # spec §4 morning cutoff
+default_timeout_s: 900

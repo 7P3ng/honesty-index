@@ -1,0 +1,19 @@
+# Which models run on which nights. Never decided at run time (spec §2, §5).
+# An entry runs on a night when (days since epoch) % night_period == night_offset.
+epoch: 2026-09-21          # a Monday; offsets count from here
+grader_model: claude-haiku-4-5-20251001
+models:
+  - id: claude-sonnet-5
+    night_period: 1
+    night_offset: 0
+    repeats: 3
+  - id: claude-haiku-4-5-20251001
+    night_period: 1
+    night_offset: 0
+    repeats: 3
+  - id: claude-opus-5
+    night_period: 3
+    night_offset: 0
+    repeats: 2
+  # Fable 5.1 is deferred until 14 clean nights (spec §5). To add it:
+  # - {id: claude-fable-5-1, night_period: 3, night_offset: 1, repeats: 2}

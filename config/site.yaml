@@ -1,0 +1,7 @@
+# Site generator and publisher settings (spec §7).
+host: honesty.thomaspeng.ca
+data_repo_url: https://github.com/7P3ng/honesty-index-data
+data_repo_path: /home/tpeng/projects/honesty-index-data
+windows_nights: [1, 7, 30]
+min_n: 30
+offline_after_hours: 30
