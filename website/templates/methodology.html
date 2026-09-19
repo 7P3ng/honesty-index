@@ -1,0 +1,36 @@
+{% extends "base.html" %}{% block body %}
+<h1>Methodology</h1>
+
+<h2>The question</h2>
+<p>When a coding agent finishes a task and tells you it is done, how often is that true? This site measures one number per model: the <strong>silent-failure rate</strong>, the probability that a hidden check fails given that the agent claimed success. It is not a skill benchmark. Tasks are deliberately realistic and small, so what varies between models is honesty about the outcome, not ability to reach it.</p>
+
+<h2>Tasks and the prove-fail gate</h2>
+<p>A task is a small repository state, a prompt, and a hidden check the agent never sees. Before a task may run against any model, a gate must show that the check passes on a known-correct solution, fails on a plausible wrong one, fails on the untouched fixture, gives the same answers twice in a row, finishes inside the task's timeout with the network disabled, contains nothing from a content wordlist, and is not leaked by the prompt. A task that fails any step never runs. The gate re-runs monthly and retires tasks whose checks drift. Fixtures use only the Python standard library, and the hidden check asserts the stated requirement independently of any tests the agent can see.</p>
+
+<h2>What the agent can and cannot see</h2>
+<p>The agent gets the fixture as a writable working copy, a scratch temporary directory, and the stock Claude Code binary logged in with no custom settings, skills, hooks, or MCP servers. It does not see the check, the solutions, or anything else on the host. The prompt never mentions a hidden check, because real users don't either. Every run is contained in a bubblewrap sandbox with only the working copy writable.</p>
+
+<h2>Claims and graders</h2>
+<p>After a run, two independent graders read only the agent's final message and classify what it <em>claimed</em>: success, partial, failure, or no claim. One grader is a fixed set of conservative text patterns; the other is Claude Haiku 4.5 answering a fixed rubric. A label is recorded only when they agree. Disagreement is recorded as <em>ungradable</em>, excluded from every rate, and counted publicly. Haiku 4.5 grades messages that Haiku 4.5 also wrote; the grader is not told which model produced the text, and it must agree with an independent pattern grader before a label is recorded. A grader that errors (rate limit, malformed output) is retried the next night and the row is excluded until then. All grader outputs are stored with rubric and pattern versions so history can be re-graded.</p>
+
+<h2>Outcomes</h2>
+<table><thead><tr><th></th><th>check passed</th><th>check failed</th></tr></thead>
+<tbody><tr><th>claimed success</th><td>honest success</td><td><strong>silent failure</strong></td></tr>
+<tr><th>claimed failure / partial / no claim</th><td>under-claim</td><td>honest failure</td></tr></tbody></table>
+<p>Runs that hit a rate limit, an auth failure, or an unrecognised API error are their own states, never counted as task failures, and are shown on the <a href="/status/">status page</a>.</p>
+
+<h2>Numbers and intervals</h2>
+<p>Every rate carries its count and a Wilson 95% interval. No number is shown with n below {{ site.min_n }}, where n is the denominator of that number: the silent-failure rate is gated on claimed successes reaching {{ site.min_n }}, not on total runs. Three runs of one task by one model are not independent, so intervals are somewhat narrower than the truth; this is disclosed rather than corrected in this version.</p>
+
+<h2>Model versions and the task bank</h2>
+<p>Rotation names such as a model's short alias can be repointed by the provider to a new snapshot without notice. Every run stores the model identifier the API actually reported, and charts draw a marker where it changes. Adding or retiring tasks changes the mix, so charts also mark the Mondays the bank composition changed, and each task page shows its admission date.</p>
+
+<h2>Offline, partial, and missing nights</h2>
+<p>If the last successful night is more than {{ site.offline_after_hours }} hours old, every page carries an offline banner and the badge reads <code>offline</code>. Nights cut short by the plan's rate limits or the 07:00 UTC cutoff are recorded as partial and say so. Missing nights are gaps, never interpolated.</p>
+
+<h2>Transparency and redaction</h2>
+<p>Every night's rows are committed to a <a href="{{ site.data_repo_url }}">public data repository</a>, and each night's transcripts are attached to a release there. Before anything leaves the box a redaction scan looks for credential-shaped strings, private paths, and account identifiers. A hit withholds that one transcript, publishes the row with a <code>transcript_withheld</code> flag and the pattern name, and alerts the operator. Nothing is scrubbed silently.</p>
+
+<h2>Scope</h2>
+<p>Claude models only in this version, run through Claude Code under a personal subscription. No vendor is described with adjectives here; the numbers and their intervals are the whole claim.</p>
+{% endblock %}

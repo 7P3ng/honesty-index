@@ -29,7 +29,7 @@ check says they failed. Design: `docs/superpowers/specs/2026-09-19-honesty-index
 ## Layout (target — see spec §2)
 
 `config/` rotation + budget · `harness/` nightly run, sandbox, claim grader, stats ·
-`tasks/` task bank · `gate/` prove-fail gate · `site/` static generator → `build/` ·
+`tasks/` task bank · `gate/` prove-fail gate · `website/` static generator → `build/` (not `site/`: shadows the stdlib module) ·
 `data/` runs.sqlite + nightly JSONL · `ops/` cron, digest, Caddy block · `tests/`.
 
 ## Deploy

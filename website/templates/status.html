@@ -1,0 +1,8 @@
+{% extends "base.html" %}{% block body %}
+<h1>Status</h1>
+<p>{% if status.online %}Online. Last complete night: {{ status.last_complete_night }}.{% else %}Offline since {{ status.last_complete_night or "launch" }}.{% endif %} Generated {{ generated_at }}.</p>
+<table><thead><tr><th>Night</th><th>Status</th><th>Runs</th><th>Reason</th></tr></thead><tbody>
+{% for n in status.nights %}<tr><td>{{ n.night }}</td><td>{{ n.status }}</td><td>{{ n.runs_done }} / {{ n.runs_planned }}</td><td>{{ n.reason }}</td></tr>
+{% else %}<tr><td colspan="4">No nights recorded yet.</td></tr>{% endfor %}
+</tbody></table>
+{% endblock %}

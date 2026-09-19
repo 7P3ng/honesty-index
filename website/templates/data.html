@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block body %}
+<h1>Data</h1>
+<ul>
+  <li><a href="/data/summary.json">summary.json</a> — every published number with its count and interval</li>
+  <li><a href="/data/runs.csv">runs.csv</a> — one row per run (final messages omitted; they are in the transcripts)</li>
+  <li><a href="{{ site.data_repo_url }}">Data repository</a> — <code>nightly/&lt;night&gt;.jsonl</code> rows committed every night; transcripts attached to the <code>night-&lt;night&gt;</code> release as a tar of zstd-compressed JSONL</li>
+</ul>
+<p>Row fields: run id, night, model requested, model served, task, category, repeat, status, check result, claim, exit code, wall time, tokens, tool calls, transcript path, and whether the transcript was withheld by the redaction pass.</p>
+{% endblock %}

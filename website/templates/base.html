@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} — Agent Honesty Index</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <a class="brand" href="/">Agent Honesty Index</a>
+  <nav><a href="/methodology/">Methodology</a> <a href="/data/">Data</a> <a href="/status/">Status</a></nav>
+</header>
+{% if not status.online %}
+<div class="banner" role="status">Instrument offline since {{ status.last_complete_night or "launch" }} — numbers below are the last known state.</div>
+{% endif %}
+<main>{% block body %}{% endblock %}</main>
+<footer>Generated {{ generated_at }} from <a href="{{ site.data_repo_url }}">public run data</a>. No number is shown with n &lt; {{ site.min_n }}, where n is that number's denominator.</footer>
+</body>
+</html>
