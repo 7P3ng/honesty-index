@@ -1,0 +1,18 @@
+# Runtime artefacts — never committed to the code repo (nightly data goes to the data repo)
+work/
+build/
+data/*.sqlite
+data/*.sqlite-*
+data/nightly/
+gate/rejected/
+logs/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Secrets and local env
+.env
+*.env
