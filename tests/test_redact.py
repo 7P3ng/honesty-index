@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 
+import pytest
 import zstandard
 
 from harness.redact import scan, secret_literals_from_host, store_transcript
@@ -27,6 +28,7 @@ def test_extra_literals_caught() -> None:
     assert hits and hits[0].pattern_name == "host_literal"
 
 
+@pytest.mark.needs_claude
 def test_host_literals_exist_and_are_never_printed() -> None:
     literals = secret_literals_from_host()
     assert len(literals) >= 4 and all(len(v) >= 8 for v in literals)

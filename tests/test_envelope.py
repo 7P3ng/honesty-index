@@ -73,6 +73,7 @@ def test_tool_calls_counted_from_assistant_events() -> None:
     assert count_tool_calls(events) == 2
 
 
+@pytest.mark.needs_claude
 def test_captured_version_matches_installed_binary(artifacts_dir: Path) -> None:
     captured = (artifacts_dir / "claude_version.txt").read_text().strip()
     assert captured == installed_claude_version(), "Claude Code upgraded: re-run ops/capture_artifacts.sh"
