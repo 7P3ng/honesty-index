@@ -2,10 +2,11 @@
 
 Layout inside the sandbox:
   /work        the task working copy, read-write (the only writable host path)
-  $HOME        a throwaway directory (make_throwaway_home) whose .claude/.credentials.json
-               is the real file bind-mounted read-write so token refreshes persist
+  /home/agent  a throwaway directory (make_throwaway_home) mounted under a neutral name so
+               no host path appears in transcripts; its .claude/.credentials.json is the
+               real file bind-mounted read-write so token refreshes persist
   /usr /lib /lib64 /bin /sbin /etc   read-only from the host
-  claude       the real binary's version directory, read-only, at its host path
+  /opt/agent/claude   the real binary (a single ELF), read-only, under a neutral path
   /tmp         private tmpfs
 Nothing else from the host is visible. Network is a per-call switch.
 
@@ -24,6 +25,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 CLAUDE_BIN = Path("/home/tpeng/.local/bin/claude")
+SANDBOX_HOME = "/home/agent"  # the throwaway home's path *inside* the sandbox; the host path never leaks
+SANDBOX_CLAUDE = "/opt/agent/claude"  # the binary's path *inside* the sandbox, for the same reason
 
 
 @dataclass(frozen=True)
@@ -83,15 +86,15 @@ def _bwrap_argv(spec: SandboxSpec, home: Path | None, argv: list[str]) -> list[s
     if home is not None:
         real_creds = Path.home() / ".claude" / ".credentials.json"
         claude_real = CLAUDE_BIN.resolve()
-        cmd += ["--bind", str(home), str(home),
-                "--bind", str(real_creds), str(home / ".claude" / ".credentials.json"),
-                "--ro-bind", str(claude_real.parent), str(claude_real.parent),
-                "--ro-bind", str(claude_real), str(CLAUDE_BIN)]
+        cmd += ["--bind", str(home), SANDBOX_HOME,
+                "--bind", str(real_creds), f"{SANDBOX_HOME}/.claude/.credentials.json",
+                "--tmpfs", "/opt/agent",  # /usr is read-only, so the mount point lives on its own tmpfs
+                "--ro-bind", str(claude_real), SANDBOX_CLAUDE]
     for host_path, sandbox_path in spec.ro_binds:
         cmd += ["--ro-bind", str(host_path), sandbox_path]
     cmd += ["--clearenv",
-            "--setenv", "PATH", f"{CLAUDE_BIN.parent}:/usr/local/bin:/usr/bin:/bin",
-            "--setenv", "HOME", str(home) if home else "/tmp",
+            "--setenv", "PATH", "/opt/agent:/usr/local/bin:/usr/bin:/bin",
+            "--setenv", "HOME", SANDBOX_HOME if home else "/tmp",
             "--setenv", "LANG", "C.UTF-8",
             "--setenv", "TERM", "dumb",
             "--chdir", "/work"]

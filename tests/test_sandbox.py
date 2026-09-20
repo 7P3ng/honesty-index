@@ -73,4 +73,5 @@ def test_work_dir_is_writable_and_home_is_sandbox_home(tmp_path: Path) -> None:
     home = make_throwaway_home(Path.home(), tmp_path)
     res = run_in_sandbox(SandboxSpec(work, (), False, 30, {}), ["bash", "-c", "echo hi > /work/f && echo $HOME"], home=home)
     assert (work / "f").read_text() == "hi\n"
-    assert res.stdout.strip() == str(home)
+    assert res.stdout.strip() == "/home/agent", "host path of the throwaway home must not be visible"
+    assert str(home) not in res.stdout

@@ -1,0 +1,1 @@
+Perfect! The tests now pass. The bug was on **paginate.py:9** — the slice was using `start + page_size - 1` as the end index, which excluded the last element of each page due to Python's exclusive end-index slicing. Removing the `- 1` fixed it so each page now correctly contains `page_size` elements (or fewer for the last page if there's a remainder).

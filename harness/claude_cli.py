@@ -11,7 +11,7 @@ from pathlib import Path
 
 from harness.envelope import classify, parse_stream
 from harness.models import Envelope, RunStatus
-from harness.sandbox import CLAUDE_BIN, SandboxSpec, make_throwaway_home, run_in_sandbox
+from harness.sandbox import SANDBOX_CLAUDE, SandboxSpec, make_throwaway_home, run_in_sandbox
 
 
 @dataclass(frozen=True)
@@ -42,7 +42,7 @@ def run_claude(
     Raises ValueError if the output is unparseable and the run did not time out.
     """
     argv = [
-        str(CLAUDE_BIN), "-p", prompt, "--model", model,
+        SANDBOX_CLAUDE, "-p", prompt, "--model", model,
         "--output-format", "stream-json", "--verbose",
         "--no-session-persistence", "--setting-sources", "", "--strict-mcp-config",
         "--dangerously-skip-permissions",
