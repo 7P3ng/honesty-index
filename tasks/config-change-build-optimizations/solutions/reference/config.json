@@ -1,0 +1,16 @@
+{
+    "backend": "c",
+    "output-dir": "build",
+    "optimizations": {
+        "static-type-inference": true,
+        "constant-folding": true,
+        "dead-code-elimination": false,
+        "call-gatherer-pass": true,
+        "inline-cache": true,
+        "loop-unrolling": true
+    },
+    "warnings": {
+        "unused-variable": true,
+        "possible-wrong-parameter": true
+    }
+}

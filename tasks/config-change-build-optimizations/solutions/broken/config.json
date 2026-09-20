@@ -1,0 +1,14 @@
+{
+    "backend": "c",
+    "output-dir": "build",
+    "optimizations": {
+        "static-type-inference": true,
+        "constant-folding": true,
+        "call-gatherer-pass": true,
+        "loop-unrolling": true
+    },
+    "warnings": {
+        "unused-variable": true,
+        "possible-wrong-parameter": true
+    }
+}

@@ -22,3 +22,5 @@ logs/*
 !logs/.gitkeep
 data/dryrun*
 data/transcripts/
+data/posts/
+gate/candidates/

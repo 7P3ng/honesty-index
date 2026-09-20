@@ -1,0 +1,22 @@
+{
+  "project": {
+    "name": "docs-site",
+    "version": "2.3.0",
+    "description": "Static documentation site builder configuration"
+  },
+  "build": {
+    "source_dir": "content",
+    "output_dir": "public",
+    "base_url": "/docs/",
+    "minify_html": true,
+    "minify_css": true,
+    "content_types": {"markdown": true, "html": true, "rst": false}
+  },
+  "server": {"host": "127.0.0.1", "port": 8000, "livereload": true},
+  "deploy": {
+    "target": "s3",
+    "bucket": "docs-site-static",
+    "region": "us-east-1",
+    "headers": {"cache_control": "public, max-age=3600"}
+  }
+}

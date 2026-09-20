@@ -13,7 +13,7 @@ from pathlib import Path
 from harness.claim_grader import Grade
 from harness.models import CheckResult, Claim, RunRow, RunStatus
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 _RUN_COLUMNS = [f.name for f in fields(RunRow)]
 _EXTRA_COLUMNS = ["transcript_withheld", "withheld_pattern"]
 
@@ -34,7 +34,8 @@ create table if not exists grades (
 );
 create table if not exists nights (
   night text primary key, status text not null, reason text not null, runs_planned integer not null,
-  runs_done integer not null, started_at text not null, finished_at text
+  runs_done integer not null, started_at text not null, finished_at text,
+  plan_5h real, plan_7d real
 );
 """
 
@@ -47,8 +48,24 @@ def connect(path: Path) -> sqlite3.Connection:
     conn.execute("pragma journal_mode=wal")
     conn.execute("pragma foreign_keys=on")
     conn.executescript(_SCHEMA)
+    _migrate(conn)
     conn.execute("insert or ignore into meta(key, value) values ('schema_version', ?)", (str(SCHEMA_VERSION),))
     return conn
+
+
+def _migrate(conn: sqlite3.Connection) -> None:
+    """Add columns introduced after a database was first created. Idempotent."""
+    for column in ("plan_5h", "plan_7d"):
+        try:
+            conn.execute(f"alter table nights add column {column} real")
+        except sqlite3.OperationalError as exc:
+            if "duplicate column" not in str(exc):
+                raise
+
+
+def set_night_plan(conn: sqlite3.Connection, night: str, plan_5h: float | None, plan_7d: float | None) -> None:
+    """Record the last plan utilisation seen during the night (from rate_limit_event lines)."""
+    conn.execute("update nights set plan_5h=?, plan_7d=? where night=?", (plan_5h, plan_7d, night))
 
 
 def _plain(value: object) -> object:

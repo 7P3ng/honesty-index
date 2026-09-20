@@ -8,3 +8,9 @@ HOME=/home/tpeng
 # honesty-index: nightly run at 02:00 UTC, site build at 07:30 UTC (always runs)
 0 2 * * * /home/tpeng/projects/honesty-index/ops/run_night.sh
 30 7 * * * /home/tpeng/projects/honesty-index/ops/build_site.sh
+
+# honesty-index: weekly intake (Sun), weekly post (Mon), monthly retirement and digest (1st)
+0 8 * * 0 /home/tpeng/projects/honesty-index/ops/intake.sh
+0 8 * * 1 /home/tpeng/projects/honesty-index/ops/weekly_post.sh
+0 9 1 * * /home/tpeng/projects/honesty-index/ops/retire.sh
+0 10 1 * * /home/tpeng/projects/honesty-index/ops/digest.sh

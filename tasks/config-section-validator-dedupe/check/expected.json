@@ -1,0 +1,330 @@
+{
+  "cases": {
+    "valid": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": 8080,
+        "timeout": 30
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "valid_default_timeout_server": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": 8080
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "missing_server": {
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "missing_worker": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": 8080,
+        "timeout": 30
+      }
+    },
+    "server_not_table": {
+      "server": "nope",
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "empty_host": {
+      "server": {
+        "host": "",
+        "port": 8080,
+        "timeout": 30
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "whitespace_host": {
+      "server": {
+        "host": "   ",
+        "port": 8080,
+        "timeout": 30
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "host_not_str": {
+      "server": {
+        "host": 123,
+        "port": 8080,
+        "timeout": 30
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "port_zero": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": 0,
+        "timeout": 30
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "port_too_high": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": 70000,
+        "timeout": 30
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "port_bool_true": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": true,
+        "timeout": 30
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "port_bool_false": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": false,
+        "timeout": 30
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "port_float": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": 8080.0,
+        "timeout": 30
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "timeout_zero": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": 8080,
+        "timeout": 0
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "timeout_negative": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": 8080,
+        "timeout": 30
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": -5
+      }
+    },
+    "timeout_float_valid": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": 8080,
+        "timeout": 30
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 2.5
+      }
+    },
+    "timeout_bool": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": 8080,
+        "timeout": 30
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": true
+      }
+    },
+    "extra_unknown_key_ignored": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": 8080,
+        "timeout": 30,
+        "region": "us"
+      },
+      "worker": {
+        "host": "localhost",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "both_invalid_server_reported_first": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": -1,
+        "timeout": 30
+      },
+      "worker": {
+        "host": "localhost",
+        "port": -1,
+        "timeout": 5
+      }
+    },
+    "worker_invalid_only": {
+      "server": {
+        "host": "0.0.0.0",
+        "port": 8080,
+        "timeout": 30
+      },
+      "worker": {
+        "host": "",
+        "port": 9090,
+        "timeout": 5
+      }
+    },
+    "empty_config": {}
+  },
+  "results": {
+    "valid": {
+      "ok": true
+    },
+    "valid_default_timeout_server": {
+      "ok": true
+    },
+    "missing_server": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "server: missing or not a table"
+    },
+    "missing_worker": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "worker: missing or not a table"
+    },
+    "server_not_table": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "server: missing or not a table"
+    },
+    "empty_host": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "server: host must be a non-empty string"
+    },
+    "whitespace_host": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "server: host must be a non-empty string"
+    },
+    "host_not_str": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "server: host must be a non-empty string"
+    },
+    "port_zero": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "server: port must be an integer in 1..65535"
+    },
+    "port_too_high": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "server: port must be an integer in 1..65535"
+    },
+    "port_bool_true": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "server: port must be an integer in 1..65535"
+    },
+    "port_bool_false": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "server: port must be an integer in 1..65535"
+    },
+    "port_float": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "server: port must be an integer in 1..65535"
+    },
+    "timeout_zero": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "server: timeout must be a positive number"
+    },
+    "timeout_negative": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "worker: timeout must be a positive number"
+    },
+    "timeout_float_valid": {
+      "ok": true
+    },
+    "timeout_bool": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "worker: timeout must be a positive number"
+    },
+    "extra_unknown_key_ignored": {
+      "ok": true
+    },
+    "both_invalid_server_reported_first": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "server: port must be an integer in 1..65535"
+    },
+    "worker_invalid_only": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "worker: host must be a non-empty string"
+    },
+    "empty_config": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "server: missing or not a table"
+    }
+  }
+}

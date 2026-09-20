@@ -22,7 +22,7 @@ from harness.checks import run_check
 from harness.claim_grader import Grade, combine, grade_by_llm, grade_by_patterns
 from harness.claude_cli import run_claude
 from harness.config import Budget, Rotation, RotationEntry, load_budget, load_rotation, load_site, tonights_rotation
-from harness.envelope import count_tool_calls
+from harness.envelope import count_tool_calls, plan_utilization
 from harness.models import CheckResult, Claim, RunRow, RunStatus
 from harness.redact import scan, secret_literals_from_host, store_transcript
 from harness.tasks import Task, active_tasks, copy_fixture
@@ -58,6 +58,7 @@ class RunOutcome:
     grades: list[Grade]
     transcript_withheld: bool
     withheld_pattern: str | None
+    plan: tuple[float | None, float | None]  # (five_hour, seven_day) utilisation seen on this run
 
 
 def _now() -> str:
@@ -131,7 +132,8 @@ def execute_run(item: PlannedRun, *, night: str, work_root: Path, transcripts_ro
             tool_calls=count_tool_calls(agent.events), transcript_path=transcript_path,
             started_at=started, finished_at=_now(),
         )
-        return RunOutcome(row, grades, withheld, withheld_pattern)
+        plan = plan_utilization(agent.envelope) if agent.envelope else (None, None)
+        return RunOutcome(row, grades, withheld, withheld_pattern, plan)
     finally:
         shutil.rmtree(run_dir, ignore_errors=True)
 
@@ -155,10 +157,11 @@ def _cutoff_for(night: date, budget: Budget) -> datetime:
 
 
 def _run_all(plan: NightPlan, budget: Budget, cutoff: datetime, conn, *, work_root: Path, transcripts_root: Path,
-             grader_model: str) -> tuple[str, str, int]:
-    """Drive the thread pool. Returns (night status, reason, runs done)."""
+             grader_model: str) -> tuple[str, str, int, tuple[float | None, float | None]]:
+    """Drive the thread pool. Returns (night status, reason, runs done, last plan utilisation seen)."""
     host_literals = secret_literals_from_host()
     done, status, reason = 0, "complete", ""
+    plan_seen: tuple[float | None, float | None] = (None, None)
     retried: set[str] = set()
     queue = list(plan.items)
     running: dict[Future[RunOutcome], PlannedRun] = {}
@@ -186,6 +189,8 @@ def _run_all(plan: NightPlan, budget: Budget, cutoff: datetime, conn, *, work_ro
                 for grade in outcome.grades:
                     db.insert_grade(conn, outcome.row.run_id, grade)
                 done += 1
+                if outcome.plan != (None, None):
+                    plan_seen = outcome.plan
                 row = outcome.row
                 print(f"[{done}/{len(plan.items)}] {row.model_requested} {row.task} r{row.repeat}: "
                       f"{row.status} check={row.check_result} claim={row.claim}", flush=True)
@@ -198,7 +203,7 @@ def _run_all(plan: NightPlan, budget: Budget, cutoff: datetime, conn, *, work_ro
                 if row.status is RunStatus.AUTH_FAILED:
                     status, reason = "failed", "auth failed"
                     queue.clear()
-    return status, reason, done
+    return status, reason, done, plan_seen
 
 
 def run_night(argv: list[str] | None = None) -> int:
@@ -261,13 +266,15 @@ def run_night(argv: list[str] | None = None) -> int:
     shutil.rmtree(scratch, ignore_errors=True)
 
     try:
-        status, reason, done = _run_all(plan, budget, _cutoff_for(night, budget), conn, work_root=work_root,
-                                        transcripts_root=transcripts_root, grader_model=rotation.grader_model)
+        status, reason, done, plan_seen = _run_all(plan, budget, _cutoff_for(night, budget), conn, work_root=work_root,
+                                                   transcripts_root=transcripts_root, grader_model=rotation.grader_model)
     except Exception as exc:
         db.upsert_night(conn, plan.night, "failed", f"{type(exc).__name__}: {exc}", len(plan.items), 0, started, _now())
         raise
     db.upsert_night(conn, plan.night, status, reason, len(plan.items), done, started, _now())
-    print(f"night {plan.night}: {status} {reason} — {done}/{len(plan.items)} runs, {regraded} re-graded", flush=True)
+    db.set_night_plan(conn, plan.night, *plan_seen)
+    print(f"night {plan.night}: {status} {reason} — {done}/{len(plan.items)} runs, {regraded} re-graded, "
+          f"plan 7d={plan_seen[1]}", flush=True)
 
     if not args.no_publish:
         try:

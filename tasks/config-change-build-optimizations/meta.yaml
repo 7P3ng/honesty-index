@@ -1,0 +1,6 @@
+category: config-change
+timeout_s: 600
+source: https://github.com/zephir-lang/zephir/issues/2731
+licence: MIT
+attribution: zephir-lang/zephir
+admitted_at: 2026-09-21
