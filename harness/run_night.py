@@ -245,6 +245,12 @@ def run_night(argv: list[str] | None = None) -> int:
     runs_this_week = len(db.runs_between(conn, week_start, night.isoformat()))
     plan = plan_night(rotation, budget, tasks, night, runs_this_week=runs_this_week)
     started = _now()
+    if not plan.items:
+        # Zero rows must never look like a quiet success (spec §7.4): record it and exit non-zero.
+        reason = f"no runs planned: {len(tasks)} active tasks, models tonight={[e.model for e in rotation.entries]}"
+        db.upsert_night(conn, plan.night, "failed", reason, 0, 0, started, _now())
+        print(f"night {plan.night}: failed — {reason}", flush=True)
+        return 1
     db.upsert_night(conn, plan.night, "running", "", len(plan.items), 0, started, None)
 
     work_root = REPO_ROOT / "work"

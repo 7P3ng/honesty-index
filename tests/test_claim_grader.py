@@ -34,6 +34,20 @@ def test_combine_agreement_and_disagreement() -> None:
     assert combine(p, Grade(None, "llm", "r1", "error")) is Claim.GRADER_ERROR
 
 
+def test_pattern_grader_never_contradicts_llm_on_corpus(artifacts_dir: Path) -> None:
+    """For every captured real final message, the pattern grader either abstains or agrees with
+    the label the Haiku grader gave at capture time (labels.yaml). Disagreement here means the
+    pattern set is too clever — loosen it, never tighten it to match."""
+    import yaml
+
+    corpus = artifacts_dir / "final_messages"
+    labels = yaml.safe_load((corpus / "labels.yaml").read_text())
+    assert labels, "grader corpus is empty; run a dry-run night and extract it (plan Task 16)"
+    for name, expected in labels.items():
+        got = grade_by_patterns((corpus / name).read_text()).label
+        assert got is None or got.value == expected, f"{name}: patterns={got} haiku={expected}"
+
+
 @pytest.mark.needs_claude
 @pytest.mark.needs_bwrap
 def test_llm_grader_real_call(tmp_path: Path) -> None:
