@@ -19,11 +19,14 @@ class CheckOutcome:
     raw: SandboxResult
 
 
-def run_check_detailed(task: Task, work_dir: Path) -> CheckOutcome:
-    """Run check.sh with network off. A timeout counts as a failed check."""
+def run_check_detailed(task: Task, work_dir: Path, *, env: dict[str, str] | None = None) -> CheckOutcome:
+    """Run check.sh with network off. A timeout counts as a failed check.
+
+    `env` is extra environment for the check. The gate passes HONESTY_GATE_ATTEMPT so a test
+    fixture can reproduce a check that flips between runs; real checks never read it."""
     spec = SandboxSpec(
         work_dir=work_dir, ro_binds=((task.check_dir, "/check"),), network=False,
-        timeout_s=task.timeout_s, env={},
+        timeout_s=task.timeout_s, env=dict(env or {}),
     )
     raw = run_in_sandbox(spec, ["sh", "/check/check.sh"], home=None)
     if raw.timed_out:

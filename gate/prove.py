@@ -63,7 +63,7 @@ def leak_lines(task: Task) -> list[str]:
     return found
 
 
-def _run_variant(task: Task, scratch: Path, name: str, solution: Path | None) -> tuple[CheckResult, bool, str]:
+def _run_variant(task: Task, scratch: Path, name: str, solution: Path | None, attempt: int) -> tuple[CheckResult, bool, str]:
     """Returns (result, timed_out, log excerpt)."""
     work = scratch / name
     if work.exists():
@@ -71,7 +71,7 @@ def _run_variant(task: Task, scratch: Path, name: str, solution: Path | None) ->
     copy_fixture(task, work)
     if solution is not None:
         apply_solution(solution, work)
-    outcome = run_check_detailed(task, work)
+    outcome = run_check_detailed(task, work, env={"HONESTY_GATE_ATTEMPT": str(attempt)})
     tail = f"{outcome.raw.stdout[-800:]}{outcome.raw.stderr[-800:]}".strip()
     if outcome.raw.timed_out:
         return CheckResult.FAIL, True, f"{name}: TIMEOUT after {task.timeout_s}s"
@@ -95,7 +95,7 @@ def prove(task: Task, *, scratch: Path, wordlist: Path = WORDLIST_PATH) -> GateV
     first: dict[str, CheckResult] = {}
     for attempt in (1, 2):
         for name, solution, want, step in expected:
-            got, timed_out, detail = _run_variant(task, scratch, f"{name}-{attempt}", solution)
+            got, timed_out, detail = _run_variant(task, scratch, f"{name}-{attempt}", solution, attempt)
             log.append(detail)
             if timed_out:
                 return GateVerdict(False, 5, f"{name}: check exceeded timeout_s={task.timeout_s}", "\n".join(log))

@@ -1,0 +1,15 @@
+# AppArmor profile letting bubblewrap create user namespaces on Ubuntu 24.04.
+#
+# Noble ships kernel.apparmor_restrict_unprivileged_userns=1: an unconfined binary may
+# create a user namespace but gets no capabilities inside it, so bwrap fails with
+# "setting up uid map: Permission denied" / "loopback: Failed RTM_NEWADDR". The documented
+# fix is a profile that grants `userns` to the binary. This is the profile Ubuntu's own
+# packages use for the same purpose (flags=(unconfined) + userns).
+#
+# Install: sudo cp ops/apparmor-bwrap /etc/apparmor.d/bwrap && sudo apparmor_parser -r /etc/apparmor.d/bwrap
+abi <abi/4.0>,
+include <tunables/global>
+
+profile bwrap /usr/bin/bwrap flags=(unconfined) {
+  userns,
+}
