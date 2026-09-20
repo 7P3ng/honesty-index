@@ -24,3 +24,8 @@ data/dryrun*
 data/transcripts/
 data/posts/
 gate/candidates/
+
+# Task fixtures may legitimately contain env files and logs
+!tasks/**/*.env
+!tasks/**/.env
+!tasks/**/logs/
