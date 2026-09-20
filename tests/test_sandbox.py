@@ -47,6 +47,8 @@ def test_sandbox_network_off_and_on(tmp_path: Path) -> None:
     on = run_in_sandbox(SandboxSpec(work, (), True, 30, {}), ["bash", "-c", PROBE_NET], home=home)
     assert off.stdout.strip() == "REFUSED"
     assert on.stdout.strip() == "VISIBLE"
+    dns = run_in_sandbox(SandboxSpec(work, (), True, 30, {}), ["getent", "hosts", "api.anthropic.com"], home=home)
+    assert dns.exit_code == 0 and "api.anthropic.com" in dns.stdout, "DNS must resolve inside the sandbox when network is on"
 
 
 def test_sandbox_timeout_kills(tmp_path: Path) -> None:

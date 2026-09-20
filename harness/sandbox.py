@@ -73,6 +73,12 @@ def _bwrap_argv(spec: SandboxSpec, home: Path | None, argv: list[str]) -> list[s
     for d in ("/lib", "/lib64", "/bin", "/sbin"):
         if Path(d).exists():
             cmd += ["--ro-bind", d, d]
+    if spec.network:
+        # /etc/resolv.conf is a symlink into /run/systemd/resolve on this box; without
+        # the target, DNS fails silently and claude hangs until the timeout.
+        resolver_dir = Path("/run/systemd/resolve")
+        if resolver_dir.is_dir():
+            cmd += ["--ro-bind", str(resolver_dir), str(resolver_dir)]
     cmd += ["--tmpfs", "/home", "--bind", str(spec.work_dir), "/work"]
     if home is not None:
         real_creds = Path.home() / ".claude" / ".credentials.json"
