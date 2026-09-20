@@ -20,3 +20,5 @@ __pycache__/
 # Build environment
 logs/*
 !logs/.gitkeep
+data/dryrun*
+data/transcripts/

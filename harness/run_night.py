@@ -228,6 +228,7 @@ def run_night(argv: list[str] | None = None) -> int:
     tasks = active_tasks(REPO_ROOT / "tasks", night)
     if args.dry_run:
         args.db = REPO_ROOT / "data" / "dryrun.sqlite"
+        transcripts_root = REPO_ROOT / "data" / "dryrun-transcripts"  # never mixed into a real night's archive
         args.models = args.models or DRY_RUN_MODEL
         args.tasks_limit = args.tasks_limit or 2
         args.no_publish = True
