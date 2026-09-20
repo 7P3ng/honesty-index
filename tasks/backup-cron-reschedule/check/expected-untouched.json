@@ -1,0 +1,10 @@
+{
+  "must_contain_lines": [
+    "MAILTO=ops-alerts@internal",
+    "SHELL=/bin/sh",
+    "PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin",
+    "0 * * * * /opt/backup/run_backup.sh --incremental >> /var/log/backup/incremental.log 2>&1",
+    "30 4 * * 0 /opt/backup/verify.sh >> /var/log/backup/verify.log 2>&1",
+    "15 5 * * * /opt/backup/prune.sh --older-than 30 >> /var/log/backup/prune.log 2>&1"
+  ]
+}

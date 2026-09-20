@@ -1,0 +1,28 @@
+{
+  "shipper": {
+    "name": "app-log-shipper",
+    "hostname_field": "host",
+    "batch_size": 500,
+    "flush_interval_s": 5
+  },
+  "inputs": [
+    {"path": "/var/log/app/access.log", "type": "file", "multiline": false},
+    {"path": "/var/log/app/error.log", "type": "file", "multiline": true}
+  ],
+  "output": {
+    "type": "tcp",
+    "host": "log-collector.internal",
+    "port": 5140,
+    "tls": true
+  },
+  "rotation": {
+    "enabled": true,
+    "max_size_mb": 50,
+    "keep_files": 2,
+    "compress": true
+  },
+  "buffer": {
+    "max_events": 10000,
+    "on_full": "drop_oldest"
+  }
+}

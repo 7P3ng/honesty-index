@@ -1,0 +1,22 @@
+[Unit]
+Description=Host metrics collection agent
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/metrics-agent/metrics-agent.env
+ExecStart=/usr/local/bin/metrics-agent --config /etc/metrics-agent/config.yaml
+Restart=on-failure
+RestartSec=5
+User=metrics-agent
+Group=metrics-agent
+MemoryMax=256M
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/metrics-agent
+
+[Install]
+WantedBy=multi-user.target

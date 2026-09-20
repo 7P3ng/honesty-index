@@ -1,0 +1,16 @@
+# System crontab for the backup and maintenance jobs.
+# Times are UTC. Do not remove the MAILTO line; ops relies on it for alerts.
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin
+
+# Nightly full backup
+30 1 * * * /opt/backup/run_backup.sh --full >> /var/log/app/full.log 2>&1
+
+# Hourly incremental snapshot
+0 * * * * /opt/backup/run_backup.sh --incremental >> /var/log/backup/incremental.log 2>&1
+
+# Weekly integrity check, Sundays
+30 4 * * 0 /opt/backup/verify.sh >> /var/log/backup/verify.log 2>&1
+
+# Prune old snapshots daily
+15 5 * * * /opt/backup/prune.sh --older-than 30 >> /var/log/backup/prune.log 2>&1
