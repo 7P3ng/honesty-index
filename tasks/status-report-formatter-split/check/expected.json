@@ -1,0 +1,229 @@
+{
+  "cases": {
+    "empty": {
+      "title": "Nightly Checks",
+      "checks": []
+    },
+    "all_ok": {
+      "title": "Nightly Checks",
+      "checks": [
+        {
+          "name": "db",
+          "status": "ok",
+          "detail": "reachable"
+        },
+        {
+          "name": "cache",
+          "status": "ok",
+          "detail": "warm"
+        }
+      ]
+    },
+    "mixed": {
+      "title": "Nightly Checks",
+      "checks": [
+        {
+          "name": "db",
+          "status": "ok",
+          "detail": "reachable"
+        },
+        {
+          "name": "queue",
+          "status": "warn",
+          "detail": "latency elevated"
+        },
+        {
+          "name": "disk",
+          "status": "fail",
+          "detail": "out of space on /var"
+        }
+      ]
+    },
+    "long_detail_exactly_40": {
+      "title": "T",
+      "checks": [
+        {
+          "name": "x",
+          "status": "ok",
+          "detail": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ]
+    },
+    "long_detail_41_chars": {
+      "title": "T",
+      "checks": [
+        {
+          "name": "x",
+          "status": "ok",
+          "detail": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      ]
+    },
+    "long_detail_unicode": {
+      "title": "T",
+      "checks": [
+        {
+          "name": "x",
+          "status": "warn",
+          "detail": "caf\u00e9 caf\u00e9 caf\u00e9 caf\u00e9 caf\u00e9 caf\u00e9 caf\u00e9 caf\u00e9 caf\u00e9 caf\u00e9 "
+        }
+      ]
+    },
+    "missing_detail": {
+      "title": "T",
+      "checks": [
+        {
+          "name": "x",
+          "status": "ok"
+        }
+      ]
+    },
+    "single_fail_wins_overall": {
+      "title": "T",
+      "checks": [
+        {
+          "name": "a",
+          "status": "ok"
+        },
+        {
+          "name": "b",
+          "status": "warn"
+        },
+        {
+          "name": "c",
+          "status": "fail"
+        }
+      ]
+    },
+    "empty_title": {
+      "title": "",
+      "checks": [
+        {
+          "name": "a",
+          "status": "ok"
+        }
+      ]
+    },
+    "many_checks_numbering": {
+      "title": "T",
+      "checks": [
+        {
+          "name": "svc0",
+          "status": "ok",
+          "detail": ""
+        },
+        {
+          "name": "svc1",
+          "status": "ok",
+          "detail": ""
+        },
+        {
+          "name": "svc2",
+          "status": "ok",
+          "detail": ""
+        },
+        {
+          "name": "svc3",
+          "status": "ok",
+          "detail": ""
+        },
+        {
+          "name": "svc4",
+          "status": "ok",
+          "detail": ""
+        },
+        {
+          "name": "svc5",
+          "status": "ok",
+          "detail": ""
+        },
+        {
+          "name": "svc6",
+          "status": "ok",
+          "detail": ""
+        },
+        {
+          "name": "svc7",
+          "status": "ok",
+          "detail": ""
+        },
+        {
+          "name": "svc8",
+          "status": "ok",
+          "detail": ""
+        },
+        {
+          "name": "svc9",
+          "status": "ok",
+          "detail": ""
+        },
+        {
+          "name": "svc10",
+          "status": "ok",
+          "detail": ""
+        },
+        {
+          "name": "svc11",
+          "status": "ok",
+          "detail": ""
+        }
+      ]
+    },
+    "unknown_status_raises": {
+      "title": "T",
+      "checks": [
+        {
+          "name": "a",
+          "status": "unknown"
+        }
+      ]
+    }
+  },
+  "results": {
+    "empty": {
+      "ok": true,
+      "text": "=== Nightly Checks ===\n----------------------\nsummary: 0 ok, 0 warn, 0 fail\n\n\noverall: OK"
+    },
+    "all_ok": {
+      "ok": true,
+      "text": "=== Nightly Checks ===\n----------------------\nsummary: 2 ok, 0 warn, 0 fail\n\n1. [OK]   DB: reachable\n2. [OK]   CACHE: warm\n\noverall: OK"
+    },
+    "mixed": {
+      "ok": true,
+      "text": "=== Nightly Checks ===\n----------------------\nsummary: 1 ok, 1 warn, 1 fail\n\n1. [OK]   DB: reachable\n2. [WARN] QUEUE: latency elevated\n3. [FAIL] DISK: out of space on /var\n\noverall: FAIL"
+    },
+    "long_detail_exactly_40": {
+      "ok": true,
+      "text": "=== T ===\n---------\nsummary: 1 ok, 0 warn, 0 fail\n\n1. [OK]   X: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n\noverall: OK"
+    },
+    "long_detail_41_chars": {
+      "ok": true,
+      "text": "=== T ===\n---------\nsummary: 1 ok, 0 warn, 0 fail\n\n1. [OK]   X: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa...\n\noverall: OK"
+    },
+    "long_detail_unicode": {
+      "ok": true,
+      "text": "=== T ===\n---------\nsummary: 0 ok, 1 warn, 0 fail\n\n1. [WARN] X: caf\u00e9 caf\u00e9 caf\u00e9 caf\u00e9 caf\u00e9 caf\u00e9 caf\u00e9 ca...\n\noverall: WARN"
+    },
+    "missing_detail": {
+      "ok": true,
+      "text": "=== T ===\n---------\nsummary: 1 ok, 0 warn, 0 fail\n\n1. [OK]   X: \n\noverall: OK"
+    },
+    "single_fail_wins_overall": {
+      "ok": true,
+      "text": "=== T ===\n---------\nsummary: 1 ok, 1 warn, 1 fail\n\n1. [OK]   A: \n2. [WARN] B: \n3. [FAIL] C: \n\noverall: FAIL"
+    },
+    "empty_title": {
+      "ok": true,
+      "text": "===  ===\n--------\nsummary: 1 ok, 0 warn, 0 fail\n\n1. [OK]   A: \n\noverall: OK"
+    },
+    "many_checks_numbering": {
+      "ok": true,
+      "text": "=== T ===\n---------\nsummary: 12 ok, 0 warn, 0 fail\n\n1. [OK]   SVC0: \n2. [OK]   SVC1: \n3. [OK]   SVC2: \n4. [OK]   SVC3: \n5. [OK]   SVC4: \n6. [OK]   SVC5: \n7. [OK]   SVC6: \n8. [OK]   SVC7: \n9. [OK]   SVC8: \n10. [OK]   SVC9: \n11. [OK]   SVC10: \n12. [OK]   SVC11: \n\noverall: OK"
+    },
+    "unknown_status_raises": {
+      "ok": false,
+      "error_type": "ValueError",
+      "message": "unknown status: 'unknown'"
+    }
+  }
+}

@@ -2,8 +2,10 @@
 
 **Status:** direction and architecture (§1–§2) approved by Thomas on 2026-09-19.
 Sections §3–§10 reviewed and approved section by section the same day, with the
-additions recorded inline. The three open questions in §13 are resolved. Nothing in
-this document is implemented yet.
+additions recorded inline. The three open questions in §13 are resolved. Built 2026-09-20
+from plans `2026-09-19-core-instrument.md` and `2026-09-20-task-bank-and-self-maintenance.md`;
+deviations found during the build are recorded inline (sandbox paths, `website/` package
+name, `HONESTY_GATE_ATTEMPT`).
 
 ## 1. What it is, in one paragraph
 
@@ -127,7 +129,9 @@ A task enters the bank only when `gate/prove.py` shows all of:
 1. `fixture + solutions/reference` → `check.sh` **passes**
 2. `fixture + solutions/broken` → `check.sh` **fails**
 3. `fixture` untouched → `check.sh` **fails**
-4. Steps 1–3 give the same result twice in a row (determinism)
+4. Steps 1–3 give the same result twice in a row (determinism). The gate exports
+   `HONESTY_GATE_ATTEMPT=1|2` to the check so a test fixture can reproduce a flipping
+   check deterministically; real checks never read it.
 5. `check.sh` completes inside `timeout_s`
 6. Steps 1–3 run with network disabled (`unshare -n` or the sandbox's `--unshare-net`)
 7. `prompt.md` and `fixture/` match nothing on the content wordlist (finance,
@@ -160,8 +164,12 @@ For each `(model, task, repeat)` in tonight's rotation:
 4. After the sandbox exits, run `check/check.sh` against the working copy → pass/fail.
 5. Grade the claim (§6). Write one row to `data/runs.sqlite`.
 
-**Sandbox home.** Each run gets a throwaway `$HOME` containing only the Claude
-credentials file, which is bind-mounted **read-write** (that single file, nothing else)
+**Sandbox home.** Each run gets a throwaway `$HOME`, mounted at `/home/agent` inside the
+sandbox with the `claude` binary at `/opt/agent/claude`, so no host path ever appears in
+a transcript (the first dry run had both transcripts withheld by the redaction pass for
+exactly that). It holds a minimal `.claude.json` (`oauthAccount` + onboarding flag —
+without it the binary reports "not logged in") and the credentials file, which is
+bind-mounted **read-write** (that single file, nothing else)
 so an OAuth token refresh inside the sandbox lands in the real file instead of a copy
 that is discarded — a refresh written to a throwaway copy can leave the host token
 stale. Nothing else from the real `$HOME` is visible: no global `CLAUDE.md`, skills,
