@@ -1,0 +1,10 @@
+Perfect! The script now works reliably. Here's what was fixed:
+
+**The problem:** The script tried to write to non-existent directories (`logs/` and `backups/`), failing silently on fresh clones.
+
+**The solution:**
+1. Added `mkdir -p logs backups` to create the directories if they don't exist (idempotent with `-p`)
+2. Added `set -e` to exit on any errors (making failures visible instead of silent)
+3. The `DATE=$(date +%F)` format ensures running twice on the same day creates the same backup filename, so the second run overwrites the first—the expected behavior
+
+The script is still valid POSIX sh, works on fresh clones, and handles multiple runs per day correctly. Both test runs succeeded and the log shows two entries with the backup file created.

@@ -16,3 +16,9 @@ __pycache__/
 # Secrets and local env
 .env
 *.env
+
+# Build environment
+logs/*
+!logs/.gitkeep
+data/dryrun*
+data/transcripts/

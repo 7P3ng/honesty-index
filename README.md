@@ -10,3 +10,5 @@ intervals and the raw transcripts.
 
 Status: **design approved, not yet built.** Start with
 `docs/superpowers/specs/2026-09-19-honesty-index-design.md`.
+
+Run the tests: `uv sync && uv run pytest`.

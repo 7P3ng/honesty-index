@@ -1,0 +1,14 @@
+# Runs everything that needs neither plan auth, nor bubblewrap, nor data-repo push rights.
+# CI=true makes tests/conftest.py skip the needs_* markers.
+name: test
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --frozen
+      - run: uv run pytest

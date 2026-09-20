@@ -1,0 +1,22 @@
+# honesty.thomaspeng.ca — personal tenant, static files only.
+# Install: sudo cp ops/honesty.thomaspeng.ca.caddy /etc/caddy/sites/personal/ && sudo caddy validate --config /etc/caddy/Caddyfile && sudo systemctl reload caddy
+# Access logging is on: the monthly digest counts visitors from this log (spec §7.2, §9).
+honesty.thomaspeng.ca {
+	import sec
+	root * /srv/personal/honesty-index/build
+	file_server
+	encode gzip
+
+	log {
+		output file /var/log/caddy/honesty.thomaspeng.ca.log
+	}
+
+	@static path *.css *.svg
+	header @static Cache-Control "public, max-age=3600"
+	@fresh path *.html / *.json *.csv
+	header @fresh Cache-Control "no-cache, must-revalidate"
+
+	# Belt-and-suspenders against subdomain typos hitting the wildcard.
+	@bad_host not host honesty.thomaspeng.ca
+	respond @bad_host 404
+}

@@ -1,0 +1,10 @@
+# honesty-index — canonical crontab lines for user tpeng.
+# Install: crontab -l > /tmp/cur && cat /tmp/cur /home/tpeng/projects/honesty-index/ops/honesty-index.crontab | crontab -
+# Diff live vs canonical: crontab -l | grep honesty-index
+SHELL=/bin/bash
+PATH=/home/tpeng/.local/bin:/usr/local/bin:/usr/bin:/bin
+HOME=/home/tpeng
+
+# honesty-index: nightly run at 02:00 UTC, site build at 07:30 UTC (always runs)
+0 2 * * * /home/tpeng/projects/honesty-index/ops/run_night.sh
+30 7 * * * /home/tpeng/projects/honesty-index/ops/build_site.sh

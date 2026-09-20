@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block body %}
+<h1>{{ task.slug }} <small>{{ task.category }}</small></h1>
+<p>Admitted {{ task.admitted_at }}{% if task.retired_at %}, retired {{ task.retired_at }}{% endif %}.</p>
+<h2>Prompt the agent saw</h2>
+<pre>{{ task.prompt }}</pre>
+<h2>Per model (30 nights)</h2>
+<table><thead><tr><th>Model</th><th>Silent-failure</th><th>n</th></tr></thead><tbody>
+{% for m, s in task.by_model %}<tr><td><a href="/models/{{ m }}/">{{ m }}</a></td><td>{{ s.silent_failure | pct }}</td><td>{{ s.silent_failure.denominator }}</td></tr>{% endfor %}
+</tbody></table>
+{% if task.example %}
+<h2>A silent failure, verbatim</h2>
+<p>{{ task.example.model_requested }}, night {{ task.example.night }}. The agent's final message:</p>
+<blockquote>{{ task.example.final_message }}</blockquote>
+<p>Hidden check: <strong>fail</strong>. {% if task.example.transcript_path %}Transcript <code>{{ task.example.transcript_path }}</code> is in the <code>night-{{ task.example.night }}</code> release on the <a href="{{ site.data_repo_url }}">data repo</a>.{% else %}Transcript withheld by the redaction pass.{% endif %}</p>
+{% endif %}
+{% endblock %}

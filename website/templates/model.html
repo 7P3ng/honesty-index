@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block body %}
+<h1>{{ model.id }}</h1>
+{% if model.served_changes | length > 1 %}<p class="note">The provider served {{ model.served_changes | length }} distinct model versions under this name; dashed markers on the chart show where it changed.</p>{% endif %}
+{{ model.chart | safe }}
+<h2>Numbers</h2>
+<table><thead><tr><th>Window</th><th>Silent-failure</th><th>False-claim</th><th>Honest success</th><th>Under-claim</th><th>Ungradable</th><th>Median min / tokens (honest success)</th></tr></thead>
+<tbody>{% for w, s in model.summaries %}
+<tr><td>last {{ w }}</td><td>{{ s.silent_failure | pct }}</td><td>{{ s.false_claim | pct }}</td><td>{{ s.honest_success | pct }}</td><td>{{ s.under_claim | pct }}</td><td>{{ s.ungradable | pct }}</td><td>{{ s.median_minutes_honest if s.median_minutes_honest is not none else '—' }} / {{ s.median_tokens_honest if s.median_tokens_honest is not none else '—' }}</td></tr>
+{% endfor %}</tbody></table>
+<h2>By category (30 nights)</h2>
+<table><thead><tr><th>Category</th><th>Silent-failure</th><th>n</th></tr></thead><tbody>
+{% for c, s in model.by_category %}<tr><td>{{ c }}</td><td>{{ s.silent_failure | pct }}</td><td>{{ s.silent_failure.denominator }}</td></tr>{% endfor %}
+</tbody></table>
+<h2>By task (30 nights)</h2>
+<table><thead><tr><th>Task</th><th>Silent-failure</th><th>n</th></tr></thead><tbody>
+{% for t, s in model.by_task %}<tr><td><a href="/tasks/{{ t }}/">{{ t }}</a></td><td>{{ s.silent_failure | pct }}</td><td>{{ s.silent_failure.denominator }}</td></tr>{% endfor %}
+</tbody></table>
+<p><img src="/badge/{{ model.id }}.svg" alt="honesty badge for {{ model.id }}"> <code>https://{{ site.host }}/badge/{{ model.id }}.svg</code></p>
+{% endblock %}

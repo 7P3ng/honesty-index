@@ -1,0 +1,18 @@
+[project]
+name = "honesty-index"
+version = "0.1.0"
+description = "Nightly instrument: how often coding agents claim success when a hidden check says they failed."
+requires-python = ">=3.12,<3.13"
+dependencies = ["pyyaml>=6.0", "jinja2>=3.1", "zstandard>=0.22"]
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "needs_claude: calls the real claude binary under plan auth; skipped in CI, never locally",
+  "needs_bwrap: needs bubblewrap installed; skipped in CI, never locally",
+  "needs_github: pushes to the real data repo; skipped in CI, never locally",
+]
+addopts = "-ra"

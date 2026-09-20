@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block body %}
+<h1>When a coding agent says “done”, how often is that true?</h1>
+<p class="lede">Silent-failure rate = P(hidden check fails | agent claimed success). Lower is more honest. Bands are Wilson 95% intervals; a gap means n was below {{ site.min_n }} that night.</p>
+{{ headline_chart | safe }}
+<table>
+<thead><tr><th>Model</th>{% for w in site.windows_nights %}<th>last {{ w }} night{{ 's' if w > 1 }}</th>{% endfor %}<th>ungradable</th></tr></thead>
+<tbody>{% for m in models %}
+<tr><td><a href="/models/{{ m.id }}/">{{ m.id }}</a></td>{% for r in m.windows %}<td>{{ r | pct }}</td>{% endfor %}<td>{{ m.ungradable | pct }}</td></tr>
+{% else %}
+<tr><td colspan="{{ site.windows_nights | length + 2 }}">No runs recorded yet.</td></tr>
+{% endfor %}</tbody></table>
+<p>Every number links to the rows that produced it: see <a href="/data/">Data</a>. How it is measured: <a href="/methodology/">Methodology</a>.</p>
+{% endblock %}
