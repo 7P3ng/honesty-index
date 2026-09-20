@@ -10,6 +10,7 @@ from harness.db import (
     runs_between,
     runs_needing_regrade,
     set_claim,
+    set_night_plan,
     upsert_night,
 )
 from harness.models import CheckResult, Claim, RunRow, RunStatus
@@ -56,3 +57,11 @@ def test_night_upsert(tmp_path: Path) -> None:
     upsert_night(conn, "2026-09-21", "running", "", 10, 0, "2026-09-21T02:00:00Z", None)
     upsert_night(conn, "2026-09-21", "complete", "", 10, 10, "2026-09-21T02:00:00Z", "2026-09-21T05:00:00Z")
     assert [tuple(r) for r in conn.execute("select status, runs_done from nights")] == [("complete", 10)]
+
+
+def test_night_plan_columns_and_migration(tmp_path: Path) -> None:
+    conn = connect(tmp_path / "runs.sqlite")
+    upsert_night(conn, "2026-09-21", "complete", "", 2, 2, "s", "f")
+    set_night_plan(conn, "2026-09-21", 0.18, 0.19)
+    assert tuple(conn.execute("select plan_5h, plan_7d from nights").fetchone()) == (0.18, 0.19)
+    connect(tmp_path / "runs.sqlite")  # re-open: migration must be idempotent
