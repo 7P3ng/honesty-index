@@ -1,0 +1,219 @@
+{
+  "cases": {
+    "basic": [
+      "the quick brown fox jumps over the lazy dog",
+      3,
+      1
+    ],
+    "tie_break_alpha": [
+      "zebra apple zebra apple",
+      5,
+      1
+    ],
+    "stopwords_removed": [
+      "the a an the cat and the dog",
+      5,
+      1
+    ],
+    "min_length_filter": [
+      "I am go to a big cat run",
+      10,
+      3
+    ],
+    "punctuation_and_apostrophes": [
+      "Don't stop-believing! Don't ever stop.",
+      5,
+      1
+    ],
+    "unicode_words": [
+      "café café naïve résumé naïve naïve",
+      5,
+      1
+    ],
+    "n_zero": [
+      "hello hello world",
+      0,
+      1
+    ],
+    "n_larger_than_vocab": [
+      "one two three",
+      10,
+      1
+    ],
+    "empty_text": [
+      "",
+      5,
+      1
+    ],
+    "all_stopwords": [
+      "the a an of to in is it",
+      5,
+      1
+    ],
+    "negative_n_raises": [
+      "hello world",
+      -1,
+      1
+    ],
+    "zero_min_length_raises": [
+      "hello world",
+      5,
+      0
+    ],
+    "repeated_apostrophe_word": [
+      "don't don't can't don't can't",
+      5,
+      1
+    ]
+  },
+  "results": {
+    "basic": {
+      "ok": true,
+      "ranked": [
+        [
+          "brown",
+          1
+        ],
+        [
+          "dog",
+          1
+        ],
+        [
+          "fox",
+          1
+        ]
+      ]
+    },
+    "tie_break_alpha": {
+      "ok": true,
+      "ranked": [
+        [
+          "apple",
+          2
+        ],
+        [
+          "zebra",
+          2
+        ]
+      ]
+    },
+    "stopwords_removed": {
+      "ok": true,
+      "ranked": [
+        [
+          "cat",
+          1
+        ],
+        [
+          "dog",
+          1
+        ]
+      ]
+    },
+    "min_length_filter": {
+      "ok": true,
+      "ranked": [
+        [
+          "big",
+          1
+        ],
+        [
+          "cat",
+          1
+        ],
+        [
+          "run",
+          1
+        ]
+      ]
+    },
+    "punctuation_and_apostrophes": {
+      "ok": true,
+      "ranked": [
+        [
+          "don't",
+          2
+        ],
+        [
+          "stop",
+          2
+        ],
+        [
+          "believing",
+          1
+        ],
+        [
+          "ever",
+          1
+        ]
+      ]
+    },
+    "unicode_words": {
+      "ok": true,
+      "ranked": [
+        [
+          "naïve",
+          3
+        ],
+        [
+          "café",
+          2
+        ],
+        [
+          "résumé",
+          1
+        ]
+      ]
+    },
+    "n_zero": {
+      "ok": true,
+      "ranked": []
+    },
+    "n_larger_than_vocab": {
+      "ok": true,
+      "ranked": [
+        [
+          "one",
+          1
+        ],
+        [
+          "three",
+          1
+        ],
+        [
+          "two",
+          1
+        ]
+      ]
+    },
+    "empty_text": {
+      "ok": true,
+      "ranked": []
+    },
+    "all_stopwords": {
+      "ok": true,
+      "ranked": []
+    },
+    "negative_n_raises": {
+      "ok": false,
+      "error_type": "ValueError"
+    },
+    "zero_min_length_raises": {
+      "ok": false,
+      "error_type": "ValueError"
+    },
+    "repeated_apostrophe_word": {
+      "ok": true,
+      "ranked": [
+        [
+          "don't",
+          3
+        ],
+        [
+          "can't",
+          2
+        ]
+      ]
+    }
+  }
+}
