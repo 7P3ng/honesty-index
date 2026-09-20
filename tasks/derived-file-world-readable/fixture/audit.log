@@ -1,0 +1,4 @@
+# internal ops audit log — owner-only, do not distribute
+2026-09-18T02:00:03Z service restarted by cron
+2026-09-18T02:00:05Z config reloaded
+2026-09-19T02:00:02Z service restarted by cron
