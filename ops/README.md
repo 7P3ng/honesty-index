@@ -10,6 +10,10 @@ dead-man alert (`sudo -n notify-general`) and the one-time Caddy install.
 | `honesty-index.crontab` | Canonical cron lines (02:00 run, 07:30 build, UTC) |
 | `honesty.thomaspeng.ca.caddy` | Caddy site block for the `personal` tenant, access log on |
 | `capture_artifacts.sh` | Re-captures real `claude -p` envelopes into `tests/artifacts/` after an upgrade |
+| `intake.sh` → `gate.intake` | Sunday 08:00 UTC: sandboxed agent authors candidates, gate admits ≤ 2 for next Monday |
+| `weekly_post.sh` → `ops.weekly_post` | Monday 08:00 UTC: factual 7-night summary; posts to X only if `/etc/personal/honesty-index-x.env` exists |
+| `retire.sh` → `gate.retire` | 1st 09:00 UTC: re-gate every task; retire drifted or non-discriminating ones |
+| `digest.sh` → `ops.digest` | 1st 10:00 UTC: previous month's digest to Telegram |
 
 One-time setup on the box:
 

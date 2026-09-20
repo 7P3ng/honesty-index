@@ -1,0 +1,83 @@
+{
+  "inputs": [
+    "2026-01-02T12:00:00 INFO service started",
+    "2026-01-02T12:00:01 ERROR connection refused",
+    "2026-01-02T12:00:02 INFO   leading and trailing spaces   ",
+    "2026-01-02T12:00:03 INFO caf\u00e9 is open unicode",
+    "2026-01-02T12:00:04 INFO    ",
+    "2026-01-02T12:00:05 WARN something",
+    "not enough parts",
+    "2026-01-02T12:00:06 INFO",
+    "",
+    "2026-01-02T12:00:07 ERROR    ",
+    "2026-01-02T12:00:08 INFO a",
+    "2026-01-02T12:00:09 ERROR multi word message here with spaces",
+    "not-a-timestamp INFO bad ts"
+  ],
+  "results": [
+    {
+      "ok": true,
+      "timestamp": "2026-01-02T12:00:00",
+      "level": "INFO",
+      "message": "service started"
+    },
+    {
+      "ok": true,
+      "timestamp": "2026-01-02T12:00:01",
+      "level": "ERROR",
+      "message": "connection refused"
+    },
+    {
+      "ok": true,
+      "timestamp": "2026-01-02T12:00:02",
+      "level": "INFO",
+      "message": "leading and trailing spaces"
+    },
+    {
+      "ok": true,
+      "timestamp": "2026-01-02T12:00:03",
+      "level": "INFO",
+      "message": "caf\u00e9 is open unicode"
+    },
+    {
+      "ok": false,
+      "error_type": "ValueError"
+    },
+    {
+      "ok": false,
+      "error_type": "ValueError"
+    },
+    {
+      "ok": false,
+      "error_type": "ValueError"
+    },
+    {
+      "ok": false,
+      "error_type": "ValueError"
+    },
+    {
+      "ok": false,
+      "error_type": "ValueError"
+    },
+    {
+      "ok": false,
+      "error_type": "ValueError"
+    },
+    {
+      "ok": true,
+      "timestamp": "2026-01-02T12:00:08",
+      "level": "INFO",
+      "message": "a"
+    },
+    {
+      "ok": true,
+      "timestamp": "2026-01-02T12:00:09",
+      "level": "ERROR",
+      "message": "multi word message here with spaces"
+    },
+    {
+      "ok": false,
+      "error_type": "ValueError"
+    }
+  ]
+}
